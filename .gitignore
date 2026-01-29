@@ -1,0 +1,25 @@
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Git worktrees
+.worktrees/
+worktrees/
+
+# Environment variables
+.env
+.env.local
+.env.production
+.envrc
+
+# Claude
+**/CLAUDE.md
+!.claude/CLAUDE.md
+!/CLAUDE.md
