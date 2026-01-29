@@ -2,7 +2,7 @@
 name: vsphere-architect
 description: |
   VMware vSphere architecture and design expertise for enterprise virtualization. Use when working with vSphere/ESXi for capacity planning, resource management, performance tuning, or infrastructure design. Covers CPU oversubscription, memory management, storage architecture, DRS, HA, networking, and best practices for enterprise deployments.
-  
+
   Commands:
   - /vcpu-ratio - Explain vCPU:pCPU ratios and CPU oversubscription
   - /memory-mgmt - Memory management techniques and optimization
@@ -17,15 +17,15 @@ description: |
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `/vcpu-ratio` | Explain vCPU:pCPU ratios, CPU oversubscription, and scheduling |
-| `/memory-mgmt` | Memory management: ballooning, TPS, compression, swapping |
-| `/storage-design` | Storage architecture: vSAN, VMFS, NFS, VMDK types |
-| `/drs-rules` | DRS configuration, affinity rules, and resource pools |
-| `/ha-design` | HA architecture, admission control, and FT design |
-| `/capacity-plan` | Capacity planning methodology and sizing ratios |
-| `/perf-troubleshoot` | Performance troubleshooting with esxtop and metrics |
+| Command              | Description                                                    |
+| -------------------- | -------------------------------------------------------------- |
+| `/vcpu-ratio`        | Explain vCPU:pCPU ratios, CPU oversubscription, and scheduling |
+| `/memory-mgmt`       | Memory management: ballooning, TPS, compression, swapping      |
+| `/storage-design`    | Storage architecture: vSAN, VMFS, NFS, VMDK types              |
+| `/drs-rules`         | DRS configuration, affinity rules, and resource pools          |
+| `/ha-design`         | HA architecture, admission control, and FT design              |
+| `/capacity-plan`     | Capacity planning methodology and sizing ratios                |
+| `/perf-troubleshoot` | Performance troubleshooting with esxtop and metrics            |
 
 ### Command Examples
 
@@ -55,12 +55,12 @@ The vCPU:pCPU ratio emerges from cumulative CPU allocation decisions—it's not 
 
 **Enterprise guidance:**
 
-| Workload Type | Recommended Ratio | Notes |
-|--------------|-------------------|-------|
-| General purpose | 4:1 to 6:1 | Default for mixed workloads |
-| CPU-intensive | 2:1 to 3:1 | Databases, analytics, compilation |
-| VDI | 6:1 to 8:1 | Bursty, non-concurrent usage |
-| Dev/Test | 8:1 to 10:1 | Tolerates contention |
+| Workload Type   | Recommended Ratio | Notes                             |
+| --------------- | ----------------- | --------------------------------- |
+| General purpose | 4:1 to 6:1        | Default for mixed workloads       |
+| CPU-intensive   | 2:1 to 3:1        | Databases, analytics, compilation |
+| VDI             | 6:1 to 8:1        | Bursty, non-concurrent usage      |
+| Dev/Test        | 8:1 to 10:1       | Tolerates contention              |
 
 **Validation metrics:**
 
@@ -81,6 +81,7 @@ Key columns: %RDY, %CSTP, %USED, %MLMTD
 ```
 
 **Troubleshooting flow:**
+
 1. High Ready + Low Co-stop → Host oversubscribed, reduce total vCPUs or add hosts
 2. High Co-stop + Normal Ready → VM has too many vCPUs, reduce VM's vCPU count
 3. High Ready + High MLMTD → Resource pool limit hit, raise limit or reservation
@@ -100,12 +101,12 @@ ESXi reclaims memory in this order (least to most disruptive):
 
 **State thresholds:**
 
-| State | Free Memory | Techniques Active |
-|-------|-------------|-------------------|
-| High | > 6% | None |
-| Soft | 4-6% | TPS, Balloon |
-| Hard | 2-4% | TPS, Balloon, Compression |
-| Low | < 2% | All including Swap |
+| State | Free Memory | Techniques Active         |
+| ----- | ----------- | ------------------------- |
+| High  | > 6%        | None                      |
+| Soft  | 4-6%        | TPS, Balloon              |
+| Hard  | 2-4%        | TPS, Balloon, Compression |
+| Low   | < 2%        | All including Swap        |
 
 **Memory metrics:**
 
@@ -121,6 +122,7 @@ Unlike CPU, memory overcommitment has severe performance implications when recla
 **Conservative approach**: Size memory to 80% utilization with no overcommitment for production workloads.
 
 **Aggressive approach**: 1.2:1 to 1.5:1 overcommitment acceptable if:
+
 - VMware Tools installed (ballooning works)
 - Guest OS can handle balloon requests
 - SSD-backed swap file configured
@@ -132,12 +134,12 @@ For memory sizing patterns, see [references/memory-sizing.md](references/memory-
 
 ### Datastore Types
 
-| Type | Use Case | Max Size | Pros | Cons |
-|------|----------|----------|------|------|
-| VMFS 6 | Block storage | 64TB | Mature, flexible | Requires SAN |
-| NFS v3/v4.1 | File storage | Array limit | Simple, thin | Network dependent |
-| vSAN | HCI | Cluster-wide | Integrated, policy-based | Requires local disks |
-| vVols | Policy-based | Array limit | Granular control | Array support required |
+| Type        | Use Case      | Max Size     | Pros                     | Cons                   |
+| ----------- | ------------- | ------------ | ------------------------ | ---------------------- |
+| VMFS 6      | Block storage | 64TB         | Mature, flexible         | Requires SAN           |
+| NFS v3/v4.1 | File storage  | Array limit  | Simple, thin             | Network dependent      |
+| vSAN        | HCI           | Cluster-wide | Integrated, policy-based | Requires local disks   |
+| vVols       | Policy-based  | Array limit  | Granular control         | Array support required |
 
 ### VMDK Types
 
@@ -148,11 +150,13 @@ For memory sizing patterns, see [references/memory-sizing.md](references/memory-
 ### vSAN Architecture
 
 **Requirements per host:**
+
 - Minimum 1 SSD (cache tier) + 1 capacity device
 - 10GbE minimum (25GbE recommended)
 - VMkernel port group for vSAN traffic
 
 **Design considerations:**
+
 - FTT (Failures to Tolerate): Defines replica count. FTT=1 requires 3+ hosts
 - Stripe width: Spreads I/O across disks for performance
 - Deduplication/Compression: Reduce capacity, adds CPU overhead
@@ -163,13 +167,14 @@ For storage design patterns, see [references/storage-patterns.md](references/sto
 
 ### DRS Automation Levels
 
-| Level | Behavior |
-|-------|----------|
-| Manual | Recommendations only, no automatic moves |
+| Level               | Behavior                                       |
+| ------------------- | ---------------------------------------------- |
+| Manual              | Recommendations only, no automatic moves       |
 | Partially Automated | Initial placement automatic, migrations manual |
-| Fully Automated | All placement and migrations automatic |
+| Fully Automated     | All placement and migrations automatic         |
 
 **Migration threshold** (1-5):
+
 - Level 1: Priority 1 recommendations only (mandatory moves)
 - Level 5: All recommendations including minor improvements
 
@@ -182,20 +187,22 @@ Resource pools partition cluster resources. Key settings:
 - **Shares**: Relative priority during contention (Low/Normal/High/Custom)
 
 **Anti-patterns to avoid:**
+
 - Deeply nested pools (>3 levels)
 - Reservations that exceed physical capacity
 - Mixing VMs directly in cluster with resource pools
 
 ### Affinity Rules
 
-| Rule Type | Purpose | Example |
-|-----------|---------|---------|
-| VM-VM Affinity | Keep VMs together | App + DB on same host for latency |
-| VM-VM Anti-affinity | Separate VMs | HA cluster nodes on different hosts |
-| VM-Host Affinity | Prefer hosts | License-bound software |
-| VM-Host Anti-affinity | Avoid hosts | Keep prod off dev hardware |
+| Rule Type             | Purpose           | Example                             |
+| --------------------- | ----------------- | ----------------------------------- |
+| VM-VM Affinity        | Keep VMs together | App + DB on same host for latency   |
+| VM-VM Anti-affinity   | Separate VMs      | HA cluster nodes on different hosts |
+| VM-Host Affinity      | Prefer hosts      | License-bound software              |
+| VM-Host Anti-affinity | Avoid hosts       | Keep prod off dev hardware          |
 
 **Required vs Preferred:**
+
 - **Required (must)**: DRS won't violate. Can prevent HA failover
 - **Preferred (should)**: DRS tries but will violate if necessary
 
@@ -207,13 +214,14 @@ For DRS tuning patterns, see [references/drs-tuning.md](references/drs-tuning.md
 
 **Policies:**
 
-| Policy | Behavior | Best For |
-|--------|----------|----------|
-| Host failures cluster tolerates | Reserve capacity for N host failures | Predictable sizing |
-| Percentage of cluster resources | Reserve X% CPU/memory | Flexible environments |
-| Dedicated failover hosts | Specific hosts as standby | Compliance requirements |
+| Policy                          | Behavior                             | Best For                |
+| ------------------------------- | ------------------------------------ | ----------------------- |
+| Host failures cluster tolerates | Reserve capacity for N host failures | Predictable sizing      |
+| Percentage of cluster resources | Reserve X% CPU/memory                | Flexible environments   |
+| Dedicated failover hosts        | Specific hosts as standby            | Compliance requirements |
 
 **Slot calculation** (for host failures method):
+
 - Slot size = Largest VM reservation (or 32MHz CPU, 128MB memory if no reservations)
 - Total slots = Sum of slots per host
 - Available slots = Total - (N hosts worth of slots)
@@ -223,16 +231,22 @@ For DRS tuning patterns, see [references/drs-tuning.md](references/drs-tuning.md
 ### Fault Tolerance
 
 **FT requirements:**
+
 - Thick eager-zeroed disks
 - vSphere FT logging network (10GbE minimum)
 - Same CPU family primary/secondary
 - Max 8 vCPUs per FT VM
 
 **FT vs HA:**
+
 - FT: Zero downtime, synchronous replication, significant resource overhead
 - HA: Restart after failure, seconds of downtime, minimal overhead
 
 For HA design patterns, see [references/ha-patterns.md](references/ha-patterns.md).
+
+For admission control reserve sizing, see [references/ha-admission-control.md](references/ha-admission-control.md).
+
+For VM-level reservation guidance, see [references/vm-reservations.md](references/vm-reservations.md).
 
 ## Capacity Planning
 
@@ -248,16 +262,19 @@ For HA design patterns, see [references/ha-patterns.md](references/ha-patterns.m
 ### Quick Sizing Formulas
 
 **Hosts needed (N+1 HA):**
+
 ```
 Hosts = ceiling((Total vCPUs / (Cores per Host × vCPU Ratio)) + 1)
 ```
 
 **Memory calculation:**
+
 ```
 Memory per Host = (Total VM Memory / Hosts) × 1.1 (10% ESXi overhead)
 ```
 
 **Example**: 100 VMs, average 4 vCPU and 16GB RAM each
+
 - Total vCPUs: 400
 - Host: 32 cores, 4:1 ratio → 128 vCPUs per host
 - Compute hosts: ceiling(400/128) + 1 = 4 + 1 = 5 hosts
@@ -282,25 +299,25 @@ v - Disk VM
 
 ### Critical Thresholds
 
-| Metric | Warning | Critical | Action |
-|--------|---------|----------|--------|
-| CPU %RDY | >5% | >10% | Reduce oversubscription |
-| CPU %CSTP | >3% | >5% | Reduce VM vCPU count |
-| MEM %ACTV | >80% | >90% | Add memory or reduce VMs |
-| KAVG (disk latency) | >20ms | >30ms | Check storage path |
-| DAVG (device latency) | >20ms | >30ms | Storage array issue |
-| %DRPTX/%DRPRX | >0.1% | >1% | Network saturation |
+| Metric                | Warning | Critical | Action                   |
+| --------------------- | ------- | -------- | ------------------------ |
+| CPU %RDY              | >5%     | >10%     | Reduce oversubscription  |
+| CPU %CSTP             | >3%     | >5%      | Reduce VM vCPU count     |
+| MEM %ACTV             | >80%    | >90%     | Add memory or reduce VMs |
+| KAVG (disk latency)   | >20ms   | >30ms    | Check storage path       |
+| DAVG (device latency) | >20ms   | >30ms    | Storage array issue      |
+| %DRPTX/%DRPRX         | >0.1%   | >1%      | Network saturation       |
 
 ### Common Issues and Fixes
 
-| Symptom | Likely Cause | Fix |
-|---------|--------------|-----|
-| High Ready across all VMs | Host oversubscribed | Add hosts, reduce vCPUs |
+| Symptom                    | Likely Cause        | Fix                     |
+| -------------------------- | ------------------- | ----------------------- |
+| High Ready across all VMs  | Host oversubscribed | Add hosts, reduce vCPUs |
 | High Ready on specific VMs | Resource pool limit | Raise limit/reservation |
-| High Co-stop | Too many vCPUs | Reduce VM's vCPU count |
-| Ballooning active | Memory pressure | Add RAM or reduce VMs |
-| KAVG >> DAVG | HBA/path issue | Check multipathing, HBA |
-| DAVG high | Storage array | Check array latency |
+| High Co-stop               | Too many vCPUs      | Reduce VM's vCPU count  |
+| Ballooning active          | Memory pressure     | Add RAM or reduce VMs   |
+| KAVG >> DAVG               | HBA/path issue      | Check multipathing, HBA |
+| DAVG high                  | Storage array       | Check array latency     |
 
 For detailed troubleshooting workflows, see [references/troubleshooting.md](references/troubleshooting.md).
 
@@ -309,6 +326,7 @@ For detailed troubleshooting workflows, see [references/troubleshooting.md](refe
 ### /vcpu-ratio Command
 
 When handling CPU ratio questions:
+
 1. Explain the ratio is emergent, not directly configured
 2. List the components that influence it (VM settings, pools, scheduler)
 3. Provide recommended ratios for the workload type
@@ -318,6 +336,7 @@ When handling CPU ratio questions:
 ### /memory-mgmt Command
 
 When handling memory questions:
+
 1. Explain the reclamation hierarchy and thresholds
 2. Clarify ballooning requires VMware Tools
 3. Discuss overcommitment implications honestly
@@ -327,6 +346,7 @@ When handling memory questions:
 ### /storage-design Command
 
 When handling storage questions:
+
 1. Clarify requirements: performance, capacity, features
 2. Compare relevant options (vSAN vs NFS vs VMFS)
 3. Discuss VMDK types and their tradeoffs
@@ -336,6 +356,7 @@ When handling storage questions:
 ### /drs-rules Command
 
 When handling DRS questions:
+
 1. Understand the placement constraint needed
 2. Recommend rule type (affinity vs anti-affinity, VM vs Host)
 3. Discuss required vs preferred implications
@@ -345,6 +366,7 @@ When handling DRS questions:
 ### /ha-design Command
 
 When handling HA questions:
+
 1. Clarify availability requirements (SLA)
 2. Recommend admission control policy
 3. Discuss slot sizing implications
@@ -354,6 +376,7 @@ When handling HA questions:
 ### /capacity-plan Command
 
 When handling capacity questions:
+
 1. Gather workload characteristics
 2. Apply appropriate ratios
 3. Include HA overhead
@@ -363,6 +386,7 @@ When handling capacity questions:
 ### /perf-troubleshoot Command
 
 When handling performance questions:
+
 1. Identify the symptom (CPU, memory, storage, network)
 2. Reference relevant esxtop metrics
 3. Compare against thresholds
