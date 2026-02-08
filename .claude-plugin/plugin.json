@@ -1,0 +1,9 @@
+{
+  "name": "vsphere-architect",
+  "version": "1.0.0",
+  "description": "VMware vSphere architecture, design, and troubleshooting expertise. Covers capacity planning, resource management, performance tuning, HA/DRS design, storage architecture, and infrastructure design for enterprise virtualization environments.",
+  "author": {
+    "name": "Mark Alston"
+  },
+  "license": "MIT"
+}
