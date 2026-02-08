@@ -1,0 +1,20 @@
+{
+  "name": "vsphere-architect",
+  "description": "Development marketplace for vSphere Architect plugin",
+  "owner": {
+    "name": "Mark Alston",
+    "email": "marktalston@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "vsphere-architect",
+      "description": "VMware vSphere architecture, design, and troubleshooting expertise. Covers capacity planning, resource management, performance tuning, HA/DRS design, storage architecture, and infrastructure design for enterprise virtualization environments.",
+      "version": "1.0.0",
+      "source": "./",
+      "author": {
+        "name": "Mark Alston",
+        "email": "marktalston@gmail.com"
+      }
+    }
+  ]
+}
